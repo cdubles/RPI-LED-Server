@@ -1,5 +1,24 @@
 var socket;
+var token;
 $(document).ready(function () {
+  token = localStorage.getItem('token')
+  let payload = {
+    body: JSON.stringify({
+      token:token
+    }),
+    method: "post",
+    headers: {
+      "content-type": "application/json",
+    },
+  };
+  fetch("/checkToken",payload)
+  .then((res) => res.json())
+  .then((res)=>{
+    console.log(res)
+    if(res.message == "invalid token"){
+      window.location.href = "/signIn.html"
+    }
+  })
   socket = io();
 });
 
