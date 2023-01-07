@@ -32,6 +32,6 @@ function submitColor() {
     parseInt(aRgbHex[1], 16),
     parseInt(aRgbHex[2], 16),
   ];
-  socket.emit("newColor", aRgb);
+  socket.emit("newColor", {data:aRgb,"token":localStorage.getItem('token')});
   console.log(aRgb);
 }

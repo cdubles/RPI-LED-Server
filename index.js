@@ -8,6 +8,7 @@ var options = {
 };
 const express = require("express");
 const bodyParser = require("body-parser");
+const { spawn } = require('child_process');
 
 const app = express();
 const server = https.createServer(options, app);
@@ -50,8 +51,28 @@ app.post("/checkToken",function(req,res){
 io.on("connection", (socket) => {
   console.log("a user connected");
   socket.on("newColor", function (values) {
-    console.log(values);
-  });
+    //console.log(values);
+    //check token
+    var token = values.token
+    if(token != null && token != 'false'){
+      var data = JWT.verifyJWT(token)
+      if(config.username=data.data.username){
+        //console.log('change color')
+        let python = spawn('python',['LED-Code/test.py',values.data[0],values.data[1],values.data[2]])
+        python.stdout.on('data',function(data){
+          pData = data.toString()
+          console.log(pData)
+        })
+      }
+      else{
+        console.log('invalid credentials')
+      }
+    }
+    else{
+      console.log('invalid token')
+    }
+
+    });
 });
 
 server.listen(serverPort, () => {
