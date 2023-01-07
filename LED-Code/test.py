@@ -9,6 +9,6 @@ print(len(sys.argv))
 print(R,G,B)
 pixels = neopixel.NeoPixel(board.D18, 150) #initialize light strip
 
-pixels.fill((R, G, B))
+pixels.fill((int(R), int(G), int(B)))
 
 sys.stdout.flush()
