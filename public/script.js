@@ -1,27 +1,36 @@
 var socket;
 var token;
 $(document).ready(function () {
-  token = localStorage.getItem('token')
+  token = localStorage.getItem("token");
   let payload = {
     body: JSON.stringify({
-      token:token
+      token: token,
     }),
     method: "post",
     headers: {
       "content-type": "application/json",
     },
   };
-  fetch("/checkToken",payload)
-  .then((res) => res.json())
-  .then((res)=>{
-    console.log(res)
-    if(res.message == "invalid token"){
-      window.location.href = "/signIn.html"
-    }
-  })
+  fetch("/checkToken", payload)
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      if (res.message == "invalid token") {
+        window.location.href = "/signIn.html";
+      }
+    });
   socket = io();
 });
-
+function changeMode(id) {
+  $(".modeSetter").each(function () {
+    if ($(this).attr("id") == id) {
+      $(this).show()
+    }
+    else{
+      $(this).hide()
+    }
+  });
+}
 function submitColor() {
   color = $("input#colorPicker").val();
   color = color.slice(1);
@@ -32,6 +41,6 @@ function submitColor() {
     parseInt(aRgbHex[1], 16),
     parseInt(aRgbHex[2], 16),
   ];
-  socket.emit("newColor", {data:aRgb,"token":localStorage.getItem('token')});
+  socket.emit("newColor", { data: aRgb, token: localStorage.getItem("token") });
   console.log(aRgb);
 }
