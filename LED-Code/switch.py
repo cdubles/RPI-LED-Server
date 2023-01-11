@@ -14,8 +14,8 @@ print(len(sys.argv))
 pixels = neopixel.NeoPixel(board.D18, 150) #initialize light strip
 while True:
     pixels.fill((int(R1), int(G1), int(B1)))
-    time.wait(2)
+    time.sleep(2)
     pixels.fill((int(R2), int(G2), int(B2)))
-    time.wait(2)
+    time.sleep(2)
 
 sys.stdout.flush()
