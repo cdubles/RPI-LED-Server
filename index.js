@@ -55,7 +55,12 @@ io.on("connection", (socket) => {
     //check token
     var token = values.token
     if(token != null && token != 'false'){
-      var data = JWT.verifyJWT(token)
+      try {
+        var data = JWT.verifyJWT(token)
+      } catch (error) {
+        console.log('invalid token')
+        break
+      }
       if(config.username=data.data.username){
         //console.log('change color')
         let python = spawn('python',['LED-Code/test.py',values.data[0],values.data[1],values.data[2]])
