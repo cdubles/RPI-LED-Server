@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
         var data = JWT.verifyJWT(token)
       } catch (error) {
         console.log('invalid token')
-        break
+        return;
       }
       if(config.username=data.data.username){
         //console.log('change color')
