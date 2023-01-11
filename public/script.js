@@ -29,19 +29,25 @@ function changeMode(id) {
     }
   });
 }
-function submitColor() {
-  color = $("input#colorPicker").val();
+
+function hexToRGB(color){
   color = color.slice(1);
-  var aRgbHex = color.match(/.{1,2}/g); //parse hex to RGB
+  let aRgbHex = color.match(/.{1,2}/g); //parse hex to RGB
   console.log(aRgbHex);
-  var aRgb = [
+  let aRgb = [
     parseInt(aRgbHex[0], 16),
     parseInt(aRgbHex[1], 16),
     parseInt(aRgbHex[2], 16),
   ];
+  return aRgb
+}
+
+function solidColor() {
+  let color = $("input#solidColorPicker").val();
+  let aRgb = hexToRGB(color)
   let payload = {
     body: JSON.stringify({
-      token: token,
+      token: localStorage.getItem("token"),
       data: aRgb,
     }),
     method: "post",
@@ -60,4 +66,31 @@ function submitColor() {
     });
 
   console.log(aRgb);
+}
+function switchColor(){
+  let color1 = $("input#color1").val()
+  let color1RGB = hexToRGB(color1)
+  let color2 = $('input#color2').val()
+  let color2RGB = hexToRGB(color2)
+
+  let payload = {
+    body: JSON.stringify({
+      token: localStorage.getItem("token"),
+      color1: color1RGB,
+      color2:color2RGB
+    }),
+    method: "post",
+    headers: {
+      "content-type": "application/json",
+    },
+  }
+
+  fetch("/switchColors", payload)
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      if(res.message =="invalid token" || res.message == "invalid credentials"){
+        //window.location.href = "/signIn.html";
+      }
+    });
 }

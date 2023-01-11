@@ -15,6 +15,8 @@ const server = https.createServer(options, app);
 
 var serverPort = 443;
 
+var processes = [];
+
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -34,57 +36,82 @@ app.post("/signIn", function (req, res) {
 });
 app.post("/checkToken", function (req, res) {
   var token = req.body.token;
-  //console.log(req.body.token)
-  if (token == null || token == "false") {
-    res.send({ message: "invalid token" });
-  } else {
-    try {
-      var data = JWT.verifyJWT(token);
-    } catch (error) {
-      res.send({ message: "invalid token" });
-      return;
-    }
-    if ((config.username = data.data.username)) {
-      res.send({ message: "valid token" });
-    } else {
-      res.send({ message: "invalid token" });
-    }
-  }
+  let tokenStatus = checkToken(token);
+  res.send({ message: tokenStatus });
 });
 
 app.post("/solidColor", function (req, res) {
   var token = req.body.token;
   var data = req.body.data;
+  let tokenStatus = checkToken(token);
+  res.send({ message: tokenStatus });
+  if (tokenStatus == "valid token") {
+    console.log("change color");
+    console.log(data);
+    killProcesses();
+    let python = spawn("python", [
+      "LED-Code/test.py",
+      data[0],
+      data[1],
+      data[2],
+    ]);
+    processes.push(python);
+    python.stdout.on("data", function (data) {
+      console.log(data.toString);
+    });
+    python.stderr.on("data", (data) => {
+      console.log(data.toString());
+    });
+  }
+});
+function checkToken(token) {
   if (token != null && token != "false") {
     try {
       var tokenData = JWT.verifyJWT(token);
     } catch (error) {
-      console.log("invalid token");
-      res.send({ message: "invalid token" });
-      return;
+      return "invalid token";
     }
     if ((config.username = tokenData.data.username)) {
-      res.send({ message: "valid token" });
-      console.log('change color')
-      console.log(data)
-      let python = spawn("python", [
-        "LED-Code/test.py",
-        data[0],
-        data[1],
-        data[2],
-      ]);
-      python.stdout.on("data", function (data) {
-        pData = data.toString();
-        //console.log(pData)
-      });
+      return "valid token";
     } else {
-      res.send({ message: "invalid credentials" });
+      return "invalid credentials";
     }
   } else {
-    res.send({ message: "invalid token" });
+    return "invalid token";
+  }
+}
+app.post("/switchColors", function (req, res) {
+  let token = req.body.token;
+  let color1 = req.body.color1;
+  let color2 = req.body.color2;
+  let tokenStatus = checkToken(token);
+  res.send({ message: tokenStatus });
+  if (tokenStatus == "valid token") {
+    killProcesses();
+    let python = spawn("python", [
+      "LED-Code/switch.py",
+      color1[0],
+      color1[1],
+      color1[2],
+      color2[0],
+      color2[1],
+      color2[2],
+    ]);
+    python.stdout.on("data", function (data) {
+      console.log(data.toString());
+    });
+    python.stderr.on("data", (data) => {
+      console.log(data.toString());
+    });
+    processes.push(python);
   }
 });
-
+function killProcesses() {
+  console.log("killing processes");
+  processes.forEach((process) => {
+    process.kill();
+  });
+}
 server.listen(serverPort, () => {
   console.log("server up and running at %s port", serverPort);
 });
