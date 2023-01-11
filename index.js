@@ -12,7 +12,6 @@ const { spawn } = require('child_process');
 
 const app = express();
 const server = https.createServer(options, app);
-const io = require("socket.io")(server);
 
 var serverPort = 443;
 
@@ -35,12 +34,18 @@ app.post("/signIn", function (req, res) {
 });
 app.post("/checkToken",function(req,res){
   var token = req.body.token
-  console.log(req.body.token)
+  //console.log(req.body.token)
   if(token == null || token == 'false'){
     res.send({message:"invalid token"})
   }
   else{
-    var data = JWT.verifyJWT(token)
+
+    try {
+      var data = JWT.verifyJWT(token)
+    } catch (error) {
+      res.send({message:"invalid token"})
+      return;
+    }
     if(config.username=data.data.username){
       res.send({message:"valid token"})
     }else{
@@ -48,37 +53,35 @@ app.post("/checkToken",function(req,res){
     } 
   }
 })
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.on("newColor", function (values) {
-    //console.log(values);
-    //check token
-    var token = values.token
+
+app.post("/solidColor",function(req,res){
+    var token = req.body.token
+    var data = req.body.data
     if(token != null && token != 'false'){
       try {
         var data = JWT.verifyJWT(token)
       } catch (error) {
         console.log('invalid token')
+        res.send({message:'invalid token'})
         return;
       }
       if(config.username=data.data.username){
+        res.send({message:'valid token'})
         //console.log('change color')
-        let python = spawn('python',['LED-Code/test.py',values.data[0],values.data[1],values.data[2]])
+        let python = spawn('python',['LED-Code/test.py',data[0],data[1],data[2]])
         python.stdout.on('data',function(data){
           pData = data.toString()
-          console.log(pData)
+          //console.log(pData)
         })
       }
       else{
-        console.log('invalid credentials')
+        res.send({message:'invalid credentials'})
       }
     }
     else{
-      console.log('invalid token')
+      res.send({message:'invalid token'})
     }
-
-    });
-});
+})
 
 server.listen(serverPort, () => {
   console.log("server up and running at %s port", serverPort);

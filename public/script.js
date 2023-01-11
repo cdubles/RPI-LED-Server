@@ -19,15 +19,13 @@ $(document).ready(function () {
         window.location.href = "/signIn.html";
       }
     });
-  socket = io();
 });
 function changeMode(id) {
   $(".modeSetter").each(function () {
     if ($(this).attr("id") == id) {
-      $(this).show()
-    }
-    else{
-      $(this).hide()
+      $(this).show();
+    } else {
+      $(this).hide();
     }
   });
 }
@@ -41,6 +39,25 @@ function submitColor() {
     parseInt(aRgbHex[1], 16),
     parseInt(aRgbHex[2], 16),
   ];
-  socket.emit("newColor", { data: aRgb, token: localStorage.getItem("token") });
+  let payload = {
+    body: JSON.stringify({
+      token: token,
+      data: aRgb,
+    }),
+    method: "post",
+    headers: {
+      "content-type": "application/json",
+    },
+  };
+
+  fetch("/solidColor", payload)
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      if(res.message =="invalid token" || res.message == "invalid credentials"){
+        window.location.href = "/signIn.html";
+      }
+    });
+
   console.log(aRgb);
 }
