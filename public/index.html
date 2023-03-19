@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,26 +9,33 @@
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
     <title>RPI LED</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <h1>RPI LED</h1>
     <header>
-      <button id="solidColorButton" onclick="changeMode('solidColor')">solid color</button>
-      <button id="alternateColorPicker" onclick="changeMode('alternateColor')">alternate color</button>
+        <button id="solidColorButton" onclick="changeMode('solidColor')">solid color</button>
+        <button id="alternateColorPicker" onclick="changeMode('alternateColor')">alternate color</button>
+        <button id="rainbowPattern" onclick="changeMode('rainbowPattern')">rainbow pattern</button>
     </header>
     <div id="solidColor" class="modeSetter" show>
-      <h2>solid color</h2>
-      <label for="solidColorPicker">solid color</label>
-      <input type="color" name="solidColorPicker" id="solidColorPicker" />
-      <button id="submit" onclick="solidColor()">change color</button>
+        <h2>solid color</h2>
+        <label for="solidColorPicker">solid color</label>
+        <input type="color" name="solidColorPicker" id="solidColorPicker" />
+        <button id="submit" onclick="solidColor()">change color</button>
     </div>
     <div id='alternateColor' class="modeSetter" hidden>
-      <h2>alternate colors</h2>
-      <label for="color1">first color</label>
-      <input type="color" name="color1" id="color1">
-      <label for="color2">second color</label>
-      <input type="color" name="color2" id="color2">
-      <button onclick="switchColor()">submit colors</button>
+        <h2>alternate colors</h2>
+        <label for="color1">first color</label>
+        <input type="color" name="color1" id="color1">
+        <label for="color2">second color</label>
+        <input type="color" name="color2" id="color2">
+        <button onclick="switchColor()">submit colors</button>
     </div>
-  </body>
+    <div id="rainbowPattern" class="modeSetter" hidden>
+        <h2>rainbow pattern</h2>
+        <button onclick="startRainbow()">start rainbow pattern</button>
+    </div>
+</body>
+
 </html>
