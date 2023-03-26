@@ -3,7 +3,7 @@ import board
 import neopixel
 import time
 pixels = neopixel.NeoPixel(board.D18, 150) 
-pixelCount  = 10
+pixelCount  = 150
 offset = 0
 def wheel(pos):
     # Input a value 0 to 255 to get a color value.
