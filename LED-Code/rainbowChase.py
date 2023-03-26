@@ -31,6 +31,6 @@ while True:
 
                 rc_index = (i * 256 // pixelCount) + j
                 pixels[abs(output)] =  wheel(rc_index & 255)
-                print(f"{wheel(rc_index & 255)}: {output}")
+                print(f"{wheel(rc_index & 255)}: {abs(output)}")
             offset+=1
             time.sleep(.5)
