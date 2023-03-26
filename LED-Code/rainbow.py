@@ -22,5 +22,4 @@ while True:
                 rc_index = (i * 256 // pixelCount) + j
                 pixels[i] = wheel(rc_index & 255)
                 print(wheel(rc_index & 255))
-            pixels.write()
             time.sleep(.1)
