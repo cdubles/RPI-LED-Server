@@ -20,6 +20,6 @@ while True:
     for j in range(255):
             for i in range(pixelCount):
                 rc_index = (i * 256 // pixelCount) + j
-                pixels[i] = wheel(rc_index & 255)
+                pixels.fill( wheel(rc_index & 255))
                 print(f"{wheel(rc_index & 255)}: {i}")
-            time.sleep(.1)
+                time.sleep(.1)
