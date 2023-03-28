@@ -8,7 +8,7 @@ offset = 0
 RED = (255,0,0)
 BLUE = (0,0,255)
 while True:
-    for i in range(10):
+    for i in range(pixelCount):
         if i % 2 == 0:
             pixels[i] = RED
         else:
